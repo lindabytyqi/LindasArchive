@@ -1,292 +1,3879 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#f9c7dc" />
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
+  <meta
+    name="theme-color"
+    content="#f8cfe1"
+  >
+
+  <meta
+    name="description"
+    content="Linda's Archive: il tuo archivio personale di libri."
+  >
+
   <title>Linda's Archive</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* =========================================================
+       RESET E VARIABILI
+    ========================================================= */
+
+    :root {
+      --pink-50: #fff8fb;
+      --pink-100: #ffeef5;
+      --pink-200: #ffdce9;
+      --pink-300: #f8c6dc;
+      --pink-400: #eea7c6;
+      --pink-500: #db7eaa;
+      --pink-600: #bb5f8c;
+      --pink-700: #914468;
+
+      --lavender-100: #f1eaff;
+      --lavender-300: #d8c7f5;
+
+      --cream: #fffaf1;
+      --white: #ffffff;
+
+      --text: #4d3542;
+      --text-soft: #806675;
+      --text-light: #a48b98;
+
+      --success: #48795e;
+      --danger: #b74f68;
+      --warning: #936e2d;
+
+      --border: rgba(120, 72, 96, 0.14);
+      --border-strong: rgba(120, 72, 96, 0.24);
+
+      --shadow-sm:
+        0 6px 20px rgba(115, 71, 92, 0.08);
+
+      --shadow-md:
+        0 16px 45px rgba(115, 71, 92, 0.13);
+
+      --shadow-lg:
+        0 24px 70px rgba(115, 71, 92, 0.18);
+
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 26px;
+      --radius-xl: 34px;
+
+      --container: 1440px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(
+          circle at 10% 0%,
+          rgba(255, 211, 230, 0.9),
+          transparent 34%
+        ),
+        radial-gradient(
+          circle at 92% 14%,
+          rgba(218, 202, 249, 0.65),
+          transparent 31%
+        ),
+        linear-gradient(
+          145deg,
+          var(--pink-50),
+          var(--cream)
+        );
+
+      font-family:
+        Inter,
+        ui-rounded,
+        "SF Pro Rounded",
+        "SF Pro Display",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    button,
+    select {
+      cursor: pointer;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    :focus-visible {
+      outline: 3px solid rgba(187, 95, 140, 0.32);
+      outline-offset: 3px;
+    }
+
+    /* =========================================================
+       LAYOUT GENERALE
+    ========================================================= */
+
+    .app-shell {
+      width: min(100%, var(--container));
+      margin: 0 auto;
+      padding:
+        max(18px, env(safe-area-inset-top))
+        max(18px, env(safe-area-inset-right))
+        max(40px, env(safe-area-inset-bottom))
+        max(18px, env(safe-area-inset-left));
+    }
+
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.88);
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    /* =========================================================
+       HEADER
+    ========================================================= */
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+
+      margin-bottom: 24px;
+      padding: 18px 22px;
+
+      border-radius: var(--radius-xl);
+    }
+
+    .brand {
+      min-width: 0;
+    }
+
+    .brand-kicker {
+      margin: 0 0 2px;
+      color: var(--pink-700);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+      font-size: clamp(1.75rem, 4vw, 3rem);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .brand-subtitle {
+      margin: 7px 0 0;
+      color: var(--text-soft);
+      font-size: 0.92rem;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .sync-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      min-height: 42px;
+      padding: 8px 13px;
+
+      color: var(--text-soft);
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .sync-dot {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 auto;
+
+      background: var(--warning);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(147, 110, 45, 0.12);
+    }
+
+    .sync-status.online .sync-dot {
+      background: var(--success);
+      box-shadow: 0 0 0 4px rgba(72, 121, 94, 0.12);
+    }
+
+    .sync-status.offline .sync-dot {
+      background: var(--danger);
+      box-shadow: 0 0 0 4px rgba(183, 79, 104, 0.12);
+    }
+
+    /* =========================================================
+       BOTTONI
+    ========================================================= */
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      min-height: 44px;
+      padding: 10px 16px;
+
+      border: 1px solid transparent;
+      border-radius: 999px;
+
+      font-weight: 800;
+      text-decoration: none;
+
+      transition:
+        transform 160ms ease,
+        box-shadow 160ms ease,
+        background-color 160ms ease,
+        border-color 160ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button:active {
+      transform: translateY(0);
+    }
+
+    .button-primary {
+      color: white;
+      background:
+        linear-gradient(
+          135deg,
+          var(--pink-600),
+          var(--pink-500)
+        );
+      box-shadow:
+        0 10px 24px rgba(187, 95, 140, 0.27);
+    }
+
+    .button-primary:hover {
+      box-shadow:
+        0 13px 30px rgba(187, 95, 140, 0.34);
+    }
+
+    .button-secondary {
+      color: var(--pink-700);
+      background: rgba(255, 255, 255, 0.8);
+      border-color: var(--border);
+    }
+
+    .button-danger {
+      color: var(--danger);
+      background: rgba(255, 255, 255, 0.82);
+      border-color: rgba(183, 79, 104, 0.22);
+    }
+
+    .button-small {
+      min-height: 38px;
+      padding: 8px 13px;
+      font-size: 0.86rem;
+    }
+
+    .icon-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 42px;
+      height: 42px;
+      padding: 0;
+
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+
+      font-size: 1.05rem;
+      font-weight: 800;
+
+      transition:
+        transform 150ms ease,
+        background-color 150ms ease;
+    }
+
+    .icon-button:hover {
+      transform: translateY(-1px);
+      background: white;
+    }
+
+    /* =========================================================
+       HERO
+    ========================================================= */
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.55fr);
+      gap: 22px;
+
+      margin-bottom: 24px;
+    }
+
+    .hero-main,
+    .hero-quote {
+      border-radius: var(--radius-xl);
+    }
+
+    .hero-main {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(26px, 5vw, 52px);
+    }
+
+    .hero-main::after {
+      content: "";
+      position: absolute;
+      right: -90px;
+      bottom: -120px;
+
+      width: 300px;
+      height: 300px;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(237, 157, 193, 0.34),
+          transparent 68%
+        );
+
+      pointer-events: none;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+
+      margin-bottom: 16px;
+      padding: 7px 12px;
+
+      color: var(--pink-700);
+      background: var(--pink-100);
+      border: 1px solid var(--pink-200);
+      border-radius: 999px;
+
+      font-size: 0.78rem;
+      font-weight: 850;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .hero-title {
+      max-width: 800px;
+      margin: 0;
+
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+      font-size: clamp(2.05rem, 6vw, 5.1rem);
+      line-height: 0.98;
+      letter-spacing: -0.055em;
+    }
+
+    .hero-description {
+      max-width: 720px;
+      margin: 20px 0 0;
+
+      color: var(--text-soft);
+      font-size: clamp(1rem, 2vw, 1.14rem);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .hero-quote {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100%;
+
+      padding: 28px;
+
+      background:
+        linear-gradient(
+          150deg,
+          rgba(244, 224, 238, 0.96),
+          rgba(236, 228, 252, 0.92)
+        );
+      border: 1px solid rgba(255, 255, 255, 0.88);
+      box-shadow: var(--shadow-md);
+    }
+
+    .quote-mark {
+      color: var(--pink-500);
+      font-family: Georgia, serif;
+      font-size: 4.5rem;
+      line-height: 0.75;
+    }
+
+    .quote-text {
+      margin: 12px 0 24px;
+
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+      font-size: clamp(1.15rem, 2.5vw, 1.6rem);
+      line-height: 1.35;
+    }
+
+    .quote-caption {
+      color: var(--text-soft);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       AUTENTICAZIONE
+    ========================================================= */
+
+    .auth-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 18px;
+
+      margin-bottom: 24px;
+      padding: 22px;
+
+      border-radius: var(--radius-xl);
+    }
+
+    .auth-copy h2 {
+      margin: 0 0 6px;
+      font-size: 1.1rem;
+    }
+
+    .auth-copy p {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 0.92rem;
+    }
+
+    .auth-user {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .user-email {
+      max-width: 280px;
+      overflow: hidden;
+      color: var(--pink-700);
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* =========================================================
+       STATISTICHE
+    ========================================================= */
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      min-width: 0;
+      padding: 22px;
+      border-radius: var(--radius-lg);
+    }
+
+    .stat-label {
+      margin: 0 0 9px;
+      color: var(--text-soft);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      margin: 0;
+
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      line-height: 1;
+    }
+
+    .stat-note {
+      margin: 9px 0 0;
+      color: var(--text-light);
+      font-size: 0.78rem;
+    }
+
+    /* =========================================================
+       TOOLBAR E FILTRI
+    ========================================================= */
+
+    .library-panel {
+      padding: 22px;
+      border-radius: var(--radius-xl);
+    }
+
+    .library-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-family: Georgia, serif;
+      font-size: clamp(1.65rem, 3vw, 2.25rem);
+      letter-spacing: -0.025em;
+    }
+
+    .section-heading p {
+      margin: 6px 0 0;
+      color: var(--text-soft);
+      font-size: 0.92rem;
+    }
+
+    .results-count {
+      color: var(--text-soft);
+      font-size: 0.88rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns:
+        minmax(230px, 2fr)
+        repeat(4, minmax(145px, 1fr));
+      gap: 11px;
+
+      margin-bottom: 18px;
+      padding: 14px;
+
+      background: rgba(255, 247, 251, 0.72);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap::before {
+      content: "⌕";
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      transform: translateY(-52%);
+
+      color: var(--text-soft);
+      font-size: 1.4rem;
+      pointer-events: none;
+    }
+
+    .search-input {
+      padding-left: 44px !important;
+    }
+
+    .field-control {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 13px;
+
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+
+      outline: none;
+
+      transition:
+        border-color 150ms ease,
+        box-shadow 150ms ease,
+        background-color 150ms ease;
+    }
+
+    .field-control:hover {
+      border-color: var(--border-strong);
+    }
+
+    .field-control:focus {
+      background: white;
+      border-color: var(--pink-500);
+      box-shadow: 0 0 0 4px rgba(219, 126, 170, 0.12);
+    }
+
+    textarea.field-control {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .filter-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 18px;
+    }
+
+    /* =========================================================
+       GRIGLIA LIBRI
+    ========================================================= */
+
+    .books-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+      gap: 16px;
+    }
+
+    .book-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 340px;
+      overflow: hidden;
+
+      background:
+        linear-gradient(
+          150deg,
+          rgba(255, 255, 255, 0.96),
+          rgba(255, 245, 250, 0.95)
+        );
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+
+      transition:
+        transform 170ms ease,
+        box-shadow 170ms ease,
+        border-color 170ms ease;
+    }
+
+    .book-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--pink-300);
+      box-shadow: var(--shadow-md);
+    }
+
+    .book-accent {
+      height: 8px;
+      background:
+        linear-gradient(
+          90deg,
+          var(--pink-300),
+          var(--lavender-300)
+        );
+    }
+
+    .book-content {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .book-topline {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .book-rating {
+      color: var(--pink-700);
+      font-size: 0.84rem;
+      font-weight: 850;
+    }
+
+    .favorite-button {
+      flex: 0 0 auto;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+
+      color: var(--text-light);
+      background: var(--pink-50);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+
+      font-size: 1.2rem;
+
+      transition:
+        transform 150ms ease,
+        color 150ms ease,
+        background-color 150ms ease;
+    }
+
+    .favorite-button:hover {
+      transform: scale(1.05);
+    }
+
+    .favorite-button.active {
+      color: var(--danger);
+      background: var(--pink-100);
+      border-color: var(--pink-300);
+    }
+
+    .book-title {
+      margin: 15px 0 5px;
+
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+      font-size: 1.48rem;
+      line-height: 1.18;
+      overflow-wrap: anywhere;
+    }
+
+    .book-author {
+      margin: 0;
+      color: var(--pink-700);
+      font-size: 0.92rem;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .book-description {
+      display: -webkit-box;
+      margin: 15px 0;
+      overflow: hidden;
+
+      color: var(--text-soft);
+      font-size: 0.9rem;
+
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+    }
+
+    .book-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: auto;
+    }
+
+    .meta-pill {
+      padding: 6px 9px;
+
+      color: var(--text-soft);
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+
+      font-size: 0.73rem;
+      font-weight: 750;
+    }
+
+    .book-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 17px;
+    }
+
+    .book-actions .button {
+      flex: 1;
+    }
+
+    /* =========================================================
+       STATO VUOTO
+    ========================================================= */
+
+    .empty-state {
+      padding: clamp(35px, 8vw, 72px) 20px;
+      text-align: center;
+    }
+
+    .empty-symbol {
+      display: grid;
+      place-items: center;
+
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 18px;
+
+      color: var(--pink-700);
+      background: var(--pink-100);
+      border: 1px solid var(--pink-200);
+      border-radius: 22px;
+
+      font-family: Georgia, serif;
+      font-size: 2.2rem;
+    }
+
+    .empty-state h3 {
+      margin: 0;
+      font-family: Georgia, serif;
+      font-size: 1.45rem;
+    }
+
+    .empty-state p {
+      max-width: 500px;
+      margin: 9px auto 0;
+      color: var(--text-soft);
+    }
+
+    /* =========================================================
+       MODALI
+    ========================================================= */
+
+    .modal-backdrop {
+      position: fixed;
+      z-index: 1000;
+      inset: 0;
+
+      display: grid;
+      place-items: center;
+
+      padding:
+        max(16px, env(safe-area-inset-top))
+        max(16px, env(safe-area-inset-right))
+        max(16px, env(safe-area-inset-bottom))
+        max(16px, env(safe-area-inset-left));
+
+      background: rgba(67, 42, 56, 0.44);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+
+      animation: fade-in 160ms ease;
+    }
+
+    .modal {
+      width: min(100%, 820px);
+      max-height: min(92vh, 920px);
+      overflow: auto;
+      overscroll-behavior: contain;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.99),
+          rgba(255, 247, 251, 0.99)
+        );
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+
+      animation: modal-in 190ms ease;
+    }
+
+    .modal-small {
+      width: min(100%, 480px);
+    }
+
+    .modal-header {
+      position: sticky;
+      z-index: 2;
+      top: 0;
+
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+
+      padding: 22px 24px;
+
+      background: rgba(255, 251, 253, 0.94);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+    }
+
+    .modal-title {
+      margin: 0;
+      font-family: Georgia, serif;
+      font-size: 1.65rem;
+    }
+
+    .modal-subtitle {
+      margin: 5px 0 0;
+      color: var(--text-soft);
+      font-size: 0.88rem;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .form-field {
+      min-width: 0;
+    }
+
+    .form-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--text);
+      font-size: 0.86rem;
+      font-weight: 820;
+    }
+
+    .form-hint {
+      display: block;
+      margin-top: 6px;
+      color: var(--text-light);
+      font-size: 0.75rem;
+    }
+
+    .rating-selector {
+      display: grid;
+      grid-template-columns: repeat(10, minmax(32px, 1fr));
+      gap: 5px;
+    }
+
+    .star-button {
+      display: grid;
+      place-items: center;
+
+      min-height: 42px;
+      padding: 0;
+
+      color: #b39aa7;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+
+      font-size: 1rem;
+
+      transition:
+        color 130ms ease,
+        background-color 130ms ease,
+        border-color 130ms ease,
+        transform 130ms ease;
+    }
+
+    .star-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .star-button.selected {
+      color: #a86082;
+      background: var(--pink-100);
+      border-color: var(--pink-300);
+    }
+
+    .favorite-toggle {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+
+      min-height: 50px;
+      padding: 11px 13px;
+
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .favorite-toggle input {
+      width: 19px;
+      height: 19px;
+      accent-color: var(--pink-600);
+    }
+
+    .modal-footer {
+      position: sticky;
+      z-index: 2;
+      bottom: 0;
+
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+
+      padding: 18px 24px;
+
+      background: rgba(255, 251, 253, 0.94);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+    }
+
+    /* =========================================================
+       DETTAGLI LIBRO
+    ========================================================= */
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .detail-box {
+      padding: 14px;
+      background: var(--pink-50);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .detail-box span {
+      display: block;
+      color: var(--text-light);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .detail-box strong {
+      display: block;
+      margin-top: 5px;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-section {
+      margin-top: 20px;
+    }
+
+    .detail-section h4 {
+      margin: 0 0 8px;
+      font-size: 0.9rem;
+    }
+
+    .detail-section p {
+      margin: 0;
+      color: var(--text-soft);
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    /* =========================================================
+       TOAST
+    ========================================================= */
+
+    .toast-container {
+      position: fixed;
+      z-index: 2000;
+      right: max(18px, env(safe-area-inset-right));
+      bottom: max(18px, env(safe-area-inset-bottom));
+
+      display: grid;
+      gap: 10px;
+      width: min(calc(100% - 36px), 390px);
+    }
+
+    .toast {
+      padding: 14px 16px;
+
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+
+      font-size: 0.9rem;
+      font-weight: 700;
+
+      animation: toast-in 180ms ease;
+    }
+
+    .toast.success {
+      border-left: 5px solid var(--success);
+    }
+
+    .toast.error {
+      border-left: 5px solid var(--danger);
+    }
+
+    /* =========================================================
+       LOADER
+    ========================================================= */
+
+    .loading-overlay {
+      position: fixed;
+      z-index: 3000;
+      inset: 0;
+
+      display: grid;
+      place-items: center;
+
+      background: rgba(255, 248, 251, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .loading-card {
+      min-width: 220px;
+      padding: 28px;
+      text-align: center;
+
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .spinner {
+      width: 34px;
+      height: 34px;
+      margin: 0 auto 14px;
+
+      border: 4px solid var(--pink-200);
+      border-top-color: var(--pink-600);
+      border-radius: 50%;
+
+      animation: spin 750ms linear infinite;
+    }
+
+    /* =========================================================
+       ANIMAZIONI
+    ========================================================= */
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+      }
+    }
+
+    @keyframes modal-in {
+      from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.985);
+      }
+    }
+
+    @keyframes toast-in {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+    }
+
+    /* =========================================================
+       TABLET
+    ========================================================= */
+
+    @media (max-width: 1050px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-quote {
+        min-height: auto;
+      }
+
+      .filters {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+      }
+
+      .search-wrap {
+        grid-column: 1 / -1;
+      }
+
+      .stats-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    /* =========================================================
+       TELEFONO
+    ========================================================= */
+
+    @media (max-width: 700px) {
+      .app-shell {
+        padding:
+          max(12px, env(safe-area-inset-top))
+          max(12px, env(safe-area-inset-right))
+          max(30px, env(safe-area-inset-bottom))
+          max(12px, env(safe-area-inset-left));
+      }
+
+      .site-header {
+        align-items: flex-start;
+        padding: 17px;
+        border-radius: 24px;
+      }
+
+      .brand-subtitle {
+        display: none;
+      }
+
+      .header-actions {
+        flex-direction: column;
+        align-items: flex-end;
+      }
+
+      .sync-status {
+        min-height: 36px;
+        padding: 6px 10px;
+        font-size: 0.73rem;
+      }
+
+      .hero {
+        gap: 14px;
+        margin-bottom: 16px;
+      }
+
+      .hero-main,
+      .hero-quote {
+        border-radius: 24px;
+      }
+
+      .hero-main {
+        padding: 26px 20px;
+      }
+
+      .hero-title {
+        font-size: clamp(2.4rem, 13vw, 4rem);
+      }
+
+      .hero-description {
+        margin-top: 16px;
+      }
+
+      .hero-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        margin-top: 22px;
+      }
+
+      .hero-actions .button {
+        width: 100%;
+      }
+
+      .hero-quote {
+        padding: 22px;
+      }
+
+      .auth-panel {
+        grid-template-columns: 1fr;
+        padding: 18px;
+      }
+
+      .auth-user {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .user-email {
+        max-width: 100%;
+      }
+
+      .stats-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .stat-card {
+        padding: 17px;
+      }
+
+      .library-panel {
+        padding: 16px;
+        border-radius: 24px;
+      }
+
+      .library-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+        padding: 10px;
+      }
+
+      .search-wrap {
+        grid-column: auto;
+      }
+
+      .filter-actions .button {
+        width: 100%;
+      }
+
+      .books-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .book-card {
+        min-height: 0;
+      }
+
+      .modal-backdrop {
+        align-items: end;
+        padding:
+          max(8px, env(safe-area-inset-top))
+          max(8px, env(safe-area-inset-right))
+          max(8px, env(safe-area-inset-bottom))
+          max(8px, env(safe-area-inset-left));
+      }
+
+      .modal,
+      .modal-small {
+        width: 100%;
+        max-height: 94dvh;
+        border-radius: 26px 26px 18px 18px;
+      }
+
+      .modal-header {
+        padding: 18px;
+      }
+
+      .modal-body {
+        padding: 18px;
+      }
+
+      .modal-footer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding:
+          14px
+          18px
+          max(14px, env(safe-area-inset-bottom));
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-field.full {
+        grid-column: auto;
+      }
+
+      .rating-selector {
+        grid-template-columns: repeat(5, 1fr);
+      }
+
+      .star-button {
+        min-height: 45px;
+      }
+
+      .details-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .site-header {
+        display: block;
+      }
+
+      .header-actions {
+        align-items: stretch;
+        margin-top: 14px;
+      }
+
+      .sync-status {
+        justify-content: center;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .book-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .modal-footer {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <div class="background-shape shape-one"></div>
-  <div class="background-shape shape-two"></div>
-  <div class="background-shape shape-three"></div>
-
-  <header class="site-header">
-    <a class="brand" href="#top" aria-label="Linda's Archive, torna in cima">
-      <span class="brand-mark">LA</span>
-      <span>
-        <strong>Linda's Archive</strong>
-        <small>Il tuo diario di lettura</small>
-      </span>
-    </a>
-    <div class="header-actions">
-      <span class="sync-badge" id="syncBadge">Configurazione richiesta</span>
-      <button class="button button-ghost account-button" id="accountButton" type="button">Accedi</button>
-      <button class="button button-primary" id="openAddBook" type="button">Aggiungi libro</button>
+  <div
+    id="loadingOverlay"
+    class="loading-overlay"
+  >
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <strong>Caricamento archivio</strong>
     </div>
-  </header>
+  </div>
 
-  <main id="top">
-    <section class="setup-banner section-shell" id="setupBanner" hidden>
-      <strong>Sincronizzazione non ancora configurata.</strong>
-      <span>Completa Firebase seguendo il file ISTRUZIONI_FIREBASE.md. Nel frattempo i dati restano solo su questo dispositivo.</span>
-    </section>
-    <section class="hero section-shell">
-      <div class="hero-copy">
-        <span class="eyebrow">Archivio personale</span>
-        <h1>Ogni libro letto merita un posto speciale.</h1>
-        <p>Raccogli i tuoi libri, salva impressioni e valutazioni e ritrova subito ogni lettura.</p>
+  <main class="app-shell">
+    <header class="site-header glass-panel">
+      <div class="brand">
+        <p class="brand-kicker">Archivio personale</p>
+        <h1 class="brand-title">Linda's Archive</h1>
+        <p class="brand-subtitle">
+          Tutte le tue letture, raccolte in un solo posto.
+        </p>
+      </div>
+
+      <div class="header-actions">
+        <div
+          id="syncStatus"
+          class="sync-status"
+          aria-live="polite"
+        >
+          <span class="sync-dot"></span>
+          <span id="syncStatusText">Connessione...</span>
+        </div>
+
+        <button
+          id="headerAddButton"
+          class="button button-primary"
+          type="button"
+          hidden
+        >
+          Aggiungi libro
+        </button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-main glass-panel">
+        <span class="hero-label">La tua biblioteca digitale</span>
+
+        <h2 class="hero-title">
+          Ogni libro lascia una traccia.
+        </h2>
+
+        <p class="hero-description">
+          Registra ciò che hai letto, conserva pensieri e valutazioni
+          e ritrova facilmente ogni storia del tuo percorso.
+        </p>
+
         <div class="hero-actions">
-          <button class="button button-primary button-large" id="heroAddBook" type="button">Aggiungi il primo libro</button>
-          <button class="button button-ghost button-large" id="scrollToArchive" type="button">Vai all'archivio</button>
+          <button
+            id="heroAddButton"
+            class="button button-primary"
+            type="button"
+            hidden
+          >
+            Aggiungi una lettura
+          </button>
+
+          <button
+            id="scrollLibraryButton"
+            class="button button-secondary"
+            type="button"
+          >
+            Esplora l'archivio
+          </button>
         </div>
       </div>
 
-      <div class="hero-card" aria-hidden="true">
-        <div class="book-stack">
-          <div class="book book-one"><span>READ</span></div>
-          <div class="book book-two"><span>LOVE</span></div>
-          <div class="book book-three"><span>KEEP</span></div>
-        </div>
-        <div class="quote-card">
-          <span class="quote-label">Nota di lettura</span>
-          <p>Le storie più belle restano con noi anche dopo l'ultima pagina.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="stats section-shell" aria-label="Statistiche archivio">
-      <article class="stat-card stat-pink">
-        <span class="stat-label">Libri letti</span>
-        <strong id="totalBooks">0</strong>
-        <span class="stat-detail">nel tuo archivio</span>
-      </article>
-      <article class="stat-card stat-lilac">
-        <span class="stat-label">Pagine lette</span>
-        <strong id="totalPages">0</strong>
-        <span class="stat-detail">in totale</span>
-      </article>
-      <article class="stat-card stat-peach">
-        <span class="stat-label">Valutazione media</span>
-        <strong id="averageRating">0.0</strong>
-        <span class="stat-detail">su 10 stelle</span>
-      </article>
-      <article class="stat-card stat-mint">
-        <span class="stat-label">Preferiti</span>
-        <strong id="favoriteBooks">0</strong>
-        <span class="stat-detail">libri del cuore</span>
-      </article>
-    </section>
-
-    <section class="archive section-shell" id="archive">
-      <div class="section-heading">
+      <aside class="hero-quote">
         <div>
-          <span class="eyebrow">La tua libreria</span>
-          <h2>Archivio libri</h2>
+          <div class="quote-mark">“</div>
+
+          <p class="quote-text">
+            Un archivio non conserva soltanto titoli:
+            conserva le versioni di noi che li hanno letti.
+          </p>
         </div>
-        <span class="results-count" id="resultsCount">0 risultati</span>
+
+        <span class="quote-caption">
+          Linda's Archive
+        </span>
+      </aside>
+    </section>
+
+    <section
+      id="authPanel"
+      class="auth-panel glass-panel"
+    >
+      <div class="auth-copy">
+        <h2 id="authTitle">
+          Accedi al tuo archivio
+        </h2>
+
+        <p id="authDescription">
+          Usa lo stesso account su telefono, tablet e computer
+          per trovare sempre gli stessi libri.
+        </p>
       </div>
 
-      <div class="filter-panel">
-        <label class="search-field">
-          <span class="sr-only">Cerca libri</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.3-4.3m2.3-5.2a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z"/></svg>
-          <input id="searchInput" type="search" placeholder="Cerca per titolo, autore, note o descrizione..." />
-        </label>
+      <div
+        id="loggedOutActions"
+        class="auth-user"
+      >
+        <button
+          id="loginButton"
+          class="button button-primary"
+          type="button"
+        >
+          Accedi
+        </button>
 
-        <div class="filters-grid">
-          <label>
-            <span>Valutazione minima</span>
-            <select id="ratingFilter">
-              <option value="0">Tutte</option>
-              <option value="10">10 stelle</option>
-              <option value="9">9+ stelle</option>
-              <option value="8">8+ stelle</option>
-              <option value="7">7+ stelle</option>
-              <option value="6">6+ stelle</option>
-              <option value="5">5+ stelle</option>
-            </select>
-          </label>
-
-          <label>
-            <span>Preferiti</span>
-            <select id="favoriteFilter">
-              <option value="all">Tutti</option>
-              <option value="favorites">Solo preferiti</option>
-              <option value="not-favorites">Non preferiti</option>
-            </select>
-          </label>
-
-          <label>
-            <span>Numero di pagine</span>
-            <select id="pagesFilter">
-              <option value="all">Tutti</option>
-              <option value="short">Fino a 200</option>
-              <option value="medium">201–400</option>
-              <option value="long">Più di 400</option>
-            </select>
-          </label>
-
-          <label>
-            <span>Ordina per</span>
-            <select id="sortFilter">
-              <option value="newest">Aggiunti di recente</option>
-              <option value="oldest">Meno recenti</option>
-              <option value="title-asc">Titolo A–Z</option>
-              <option value="title-desc">Titolo Z–A</option>
-              <option value="rating-desc">Valutazione più alta</option>
-              <option value="pages-desc">Più pagine</option>
-              <option value="time-asc">Lettura più veloce</option>
-            </select>
-          </label>
-        </div>
-
-        <div class="filter-footer">
-          <label class="checkbox-field">
-            <input id="notesFilter" type="checkbox" />
-            <span>Solo libri con note</span>
-          </label>
-          <button class="text-button" id="clearFilters" type="button">Azzera filtri</button>
-        </div>
+        <button
+          id="registerButton"
+          class="button button-secondary"
+          type="button"
+        >
+          Crea account
+        </button>
       </div>
 
-      <div class="books-grid" id="booksGrid"></div>
+      <div
+        id="loggedInActions"
+        class="auth-user"
+        hidden
+      >
+        <span
+          id="userEmail"
+          class="user-email"
+        ></span>
 
-      <div class="empty-state" id="emptyState" hidden>
-        <div class="empty-illustration"><span>LA</span></div>
-        <h3>Nessun libro trovato</h3>
-        <p id="emptyMessage">Aggiungi il tuo primo libro per iniziare l'archivio.</p>
-        <button class="button button-primary" id="emptyAddBook" type="button">Aggiungi un libro</button>
+        <button
+          id="logoutButton"
+          class="button button-secondary button-small"
+          type="button"
+        >
+          Esci
+        </button>
+      </div>
+    </section>
+
+    <section
+      id="statsSection"
+      class="stats-grid"
+      aria-label="Statistiche di lettura"
+    >
+      <article class="stat-card glass-panel">
+        <p class="stat-label">Libri letti</p>
+        <p
+          id="totalBooksStat"
+          class="stat-value"
+        >
+          0
+        </p>
+        <p class="stat-note">Titoli nel tuo archivio</p>
+      </article>
+
+      <article class="stat-card glass-panel">
+        <p class="stat-label">Pagine lette</p>
+        <p
+          id="totalPagesStat"
+          class="stat-value"
+        >
+          0
+        </p>
+        <p class="stat-note">Somma delle pagine registrate</p>
+      </article>
+
+      <article class="stat-card glass-panel">
+        <p class="stat-label">Valutazione media</p>
+        <p
+          id="averageRatingStat"
+          class="stat-value"
+        >
+          0
+        </p>
+        <p class="stat-note">Media su 10 stelle</p>
+      </article>
+
+      <article class="stat-card glass-panel">
+        <p class="stat-label">Preferiti</p>
+        <p
+          id="favoritesStat"
+          class="stat-value"
+        >
+          0
+        </p>
+        <p class="stat-note">Libri segnati con il cuore</p>
+      </article>
+    </section>
+
+    <section
+      id="librarySection"
+      class="library-panel glass-panel"
+    >
+      <div class="library-header">
+        <div class="section-heading">
+          <h2>Il mio archivio</h2>
+          <p>
+            Cerca, filtra e ordina tutte le tue letture.
+          </p>
+        </div>
+
+        <span
+          id="resultsCount"
+          class="results-count"
+        >
+          0 libri
+        </span>
+      </div>
+
+      <div class="filters">
+        <div class="search-wrap">
+          <input
+            id="searchInput"
+            class="field-control search-input"
+            type="search"
+            placeholder="Cerca titolo, autore, descrizione o note"
+            autocomplete="off"
+          >
+        </div>
+
+        <select
+          id="favoriteFilter"
+          class="field-control"
+          aria-label="Filtra per preferiti"
+        >
+          <option value="all">Tutti i libri</option>
+          <option value="favorites">Solo preferiti</option>
+          <option value="not-favorites">Non preferiti</option>
+        </select>
+
+        <select
+          id="ratingFilter"
+          class="field-control"
+          aria-label="Filtra per valutazione"
+        >
+          <option value="0">Qualsiasi valutazione</option>
+          <option value="10">10 stelle</option>
+          <option value="9">Almeno 9 stelle</option>
+          <option value="8">Almeno 8 stelle</option>
+          <option value="7">Almeno 7 stelle</option>
+          <option value="6">Almeno 6 stelle</option>
+          <option value="5">Almeno 5 stelle</option>
+        </select>
+
+        <select
+          id="pagesFilter"
+          class="field-control"
+          aria-label="Filtra per numero di pagine"
+        >
+          <option value="all">Qualsiasi lunghezza</option>
+          <option value="short">Fino a 200 pagine</option>
+          <option value="medium">201–400 pagine</option>
+          <option value="long">Più di 400 pagine</option>
+          <option value="unknown">Pagine non indicate</option>
+        </select>
+
+        <select
+          id="sortSelect"
+          class="field-control"
+          aria-label="Ordina libri"
+        >
+          <option value="newest">Aggiunti di recente</option>
+          <option value="oldest">Aggiunti meno recentemente</option>
+          <option value="title-asc">Titolo A–Z</option>
+          <option value="title-desc">Titolo Z–A</option>
+          <option value="author-asc">Autore A–Z</option>
+          <option value="rating-desc">Valutazione più alta</option>
+          <option value="rating-asc">Valutazione più bassa</option>
+          <option value="pages-desc">Più pagine</option>
+          <option value="pages-asc">Meno pagine</option>
+        </select>
+      </div>
+
+      <div class="filter-actions">
+        <button
+          id="resetFiltersButton"
+          class="button button-secondary button-small"
+          type="button"
+        >
+          Azzera filtri
+        </button>
+      </div>
+
+      <div
+        id="booksGrid"
+        class="books-grid"
+      ></div>
+
+      <div
+        id="emptyState"
+        class="empty-state"
+        hidden
+      >
+        <div class="empty-symbol">L</div>
+        <h3 id="emptyTitle">Il tuo archivio è vuoto</h3>
+        <p id="emptyDescription">
+          Accedi e aggiungi il primo libro per iniziare
+          a costruire la tua biblioteca personale.
+        </p>
       </div>
     </section>
   </main>
 
-  <footer>
-    <p>Linda's Archive — le tue letture, tutte insieme.</p>
-  </footer>
+  <!-- MODALE AUTENTICAZIONE -->
 
-  <dialog class="book-dialog" id="bookDialog">
-    <form method="dialog" class="dialog-card" id="bookForm">
-      <div class="dialog-header">
+  <div
+    id="authModal"
+    class="modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="authModalTitle"
+    hidden
+  >
+    <section class="modal modal-small">
+      <header class="modal-header">
         <div>
-          <span class="eyebrow">Nuova lettura</span>
-          <h2 id="dialogTitle">Aggiungi un libro</h2>
+          <h2
+            id="authModalTitle"
+            class="modal-title"
+          >
+            Accedi
+          </h2>
+
+          <p
+            id="authModalSubtitle"
+            class="modal-subtitle"
+          >
+            Inserisci i dati del tuo account.
+          </p>
         </div>
-        <button class="icon-button" id="closeDialog" type="button" aria-label="Chiudi">×</button>
-      </div>
 
-      <input type="hidden" id="bookId" />
+        <button
+          class="icon-button"
+          type="button"
+          data-close-modal="authModal"
+          aria-label="Chiudi"
+        >
+          ×
+        </button>
+      </header>
 
-      <div class="form-grid">
-        <label class="field field-wide">
-          <span>Titolo *</span>
-          <input id="title" name="title" type="text" required maxlength="120" placeholder="Es. Orgoglio e pregiudizio" />
-        </label>
+      <form id="authForm">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-field full">
+              <label
+                class="form-label"
+                for="authEmail"
+              >
+                Email
+              </label>
 
-        <label class="field field-wide">
-          <span>Autore *</span>
-          <input id="author" name="author" type="text" required maxlength="100" placeholder="Es. Jane Austen" />
-        </label>
+              <input
+                id="authEmail"
+                class="field-control"
+                type="email"
+                autocomplete="email"
+                required
+              >
+            </div>
 
-        <fieldset class="field field-wide rating-fieldset">
-          <legend>Valutazione *</legend>
-          <div class="star-rating" id="starRating" role="radiogroup" aria-label="Valutazione da 1 a 10 stelle"></div>
-          <span class="rating-value"><strong id="ratingValue">0</strong>/10</span>
-          <input id="rating" name="rating" type="hidden" required />
-        </fieldset>
+            <div class="form-field full">
+              <label
+                class="form-label"
+                for="authPassword"
+              >
+                Password
+              </label>
 
-        <label class="field">
-          <span>Numero di pagine</span>
-          <input id="pages" name="pages" type="number" min="1" max="20000" placeholder="Es. 352" />
-        </label>
+              <input
+                id="authPassword"
+                class="field-control"
+                type="password"
+                minlength="6"
+                autocomplete="current-password"
+                required
+              >
 
-        <label class="field">
-          <span>Tempo impiegato</span>
-          <input id="readingTime" name="readingTime" type="text" maxlength="60" placeholder="Es. 12 giorni" />
-        </label>
+              <span class="form-hint">
+                La password deve contenere almeno 6 caratteri.
+              </span>
+            </div>
+          </div>
+        </div>
 
-        <label class="field field-wide">
-          <span>Descrizione</span>
-          <textarea id="description" name="description" rows="4" maxlength="1000" placeholder="Una breve descrizione del libro..."></textarea>
-        </label>
+        <footer class="modal-footer">
+          <button
+            class="button button-secondary"
+            type="button"
+            data-close-modal="authModal"
+          >
+            Annulla
+          </button>
 
-        <label class="field field-wide">
-          <span>Note personali</span>
-          <textarea id="notes" name="notes" rows="4" maxlength="1500" placeholder="Pensieri, citazioni, impressioni..."></textarea>
-        </label>
+          <button
+            id="authSubmitButton"
+            class="button button-primary"
+            type="submit"
+          >
+            Accedi
+          </button>
+        </footer>
+      </form>
+    </section>
+  </div>
 
-        <label class="favorite-toggle field-wide">
-          <input id="favorite" name="favorite" type="checkbox" />
-          <span class="heart">♥</span>
-          <span>Aggiungi ai preferiti</span>
-        </label>
-      </div>
+  <!-- MODALE LIBRO -->
 
-      <div class="dialog-actions">
-        <button class="button button-ghost" id="cancelDialog" type="button">Annulla</button>
-        <button class="button button-primary" type="submit">Salva libro</button>
-      </div>
-    </form>
-  </dialog>
-
-  <dialog class="book-dialog details-dialog" id="detailsDialog">
-    <article class="dialog-card details-card">
-      <div class="dialog-header">
+  <div
+    id="bookModal"
+    class="modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="bookModalTitle"
+    hidden
+  >
+    <section class="modal">
+      <header class="modal-header">
         <div>
-          <span class="eyebrow">Scheda libro</span>
-          <h2 id="detailsTitle"></h2>
+          <h2
+            id="bookModalTitle"
+            class="modal-title"
+          >
+            Aggiungi un libro
+          </h2>
+
+          <p class="modal-subtitle">
+            Inserisci le informazioni che desideri conservare.
+          </p>
         </div>
-        <button class="icon-button" id="closeDetails" type="button" aria-label="Chiudi">×</button>
-      </div>
-      <div id="detailsContent"></div>
-    </article>
-  </dialog>
 
-  <template id="bookCardTemplate">
-    <article class="book-card">
-      <div class="card-topline">
-        <button class="favorite-button" type="button" aria-label="Aggiungi o rimuovi dai preferiti">♥</button>
-        <span class="book-pages"></span>
-      </div>
-      <div class="cover-block">
-        <span class="cover-initials"></span>
-      </div>
-      <div class="book-content">
-        <div class="book-rating"></div>
-        <h3 class="book-title"></h3>
-        <p class="book-author"></p>
-        <p class="book-description"></p>
-        <div class="book-meta"></div>
-      </div>
-      <div class="card-actions">
-        <button class="card-button view-button" type="button">Apri</button>
-        <button class="card-button edit-button" type="button">Modifica</button>
-        <button class="card-button delete-button" type="button">Elimina</button>
-      </div>
-    </article>
-  </template>
+        <button
+          class="icon-button"
+          type="button"
+          data-close-modal="bookModal"
+          aria-label="Chiudi"
+        >
+          ×
+        </button>
+      </header>
 
+      <form id="bookForm">
+        <div class="modal-body">
+          <input
+            id="bookId"
+            type="hidden"
+          >
 
-  <dialog class="book-dialog auth-dialog" id="authDialog">
-    <form class="dialog-card auth-card" id="authForm">
-      <div class="dialog-header">
-        <div><span class="eyebrow">Archivio sincronizzato</span><h2 id="authTitle">Accedi</h2></div>
-        <button class="icon-button" id="closeAuth" type="button" aria-label="Chiudi">×</button>
+          <input
+            id="bookRating"
+            type="hidden"
+            value="0"
+          >
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label
+                class="form-label"
+                for="bookTitle"
+              >
+                Titolo
+              </label>
+
+              <input
+                id="bookTitle"
+                class="field-control"
+                type="text"
+                maxlength="180"
+                autocomplete="off"
+                required
+              >
+            </div>
+
+            <div class="form-field">
+              <label
+                class="form-label"
+                for="bookAuthor"
+              >
+                Autore
+              </label>
+
+              <input
+                id="bookAuthor"
+                class="field-control"
+                type="text"
+                maxlength="180"
+                autocomplete="off"
+                required
+              >
+            </div>
+
+            <div class="form-field full">
+              <span class="form-label">
+                Valutazione
+              </span>
+
+              <div
+                id="ratingSelector"
+                class="rating-selector"
+                aria-label="Valutazione da 1 a 10 stelle"
+              ></div>
+
+              <span
+                id="ratingText"
+                class="form-hint"
+              >
+                Nessuna valutazione selezionata.
+              </span>
+            </div>
+
+            <div class="form-field">
+              <label
+                class="form-label"
+                for="bookPages"
+              >
+                Numero di pagine
+              </label>
+
+              <input
+                id="bookPages"
+                class="field-control"
+                type="number"
+                min="1"
+                max="100000"
+                inputmode="numeric"
+                placeholder="Es. 320"
+              >
+            </div>
+
+            <div class="form-field">
+              <label
+                class="form-label"
+                for="bookReadingTime"
+              >
+                Tempo impiegato
+              </label>
+
+              <input
+                id="bookReadingTime"
+                class="field-control"
+                type="text"
+                maxlength="100"
+                placeholder="Es. 8 giorni"
+              >
+            </div>
+
+            <div class="form-field full">
+              <label class="favorite-toggle">
+                <input
+                  id="bookFavorite"
+                  type="checkbox"
+                >
+
+                <span>
+                  Aggiungi questo libro ai preferiti ♥
+                </span>
+              </label>
+            </div>
+
+            <div class="form-field full">
+              <label
+                class="form-label"
+                for="bookDescription"
+              >
+                Descrizione
+              </label>
+
+              <textarea
+                id="bookDescription"
+                class="field-control"
+                maxlength="3000"
+                placeholder="Una breve descrizione del libro..."
+              ></textarea>
+            </div>
+
+            <div class="form-field full">
+              <label
+                class="form-label"
+                for="bookNotes"
+              >
+                Note personali
+              </label>
+
+              <textarea
+                id="bookNotes"
+                class="field-control"
+                maxlength="5000"
+                placeholder="Pensieri, citazioni, impressioni..."
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <footer class="modal-footer">
+          <button
+            class="button button-secondary"
+            type="button"
+            data-close-modal="bookModal"
+          >
+            Annulla
+          </button>
+
+          <button
+            id="saveBookButton"
+            class="button button-primary"
+            type="submit"
+          >
+            Salva libro
+          </button>
+        </footer>
+      </form>
+    </section>
+  </div>
+
+  <!-- MODALE DETTAGLI -->
+
+  <div
+    id="detailsModal"
+    class="modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="detailsTitle"
+    hidden
+  >
+    <section class="modal">
+      <header class="modal-header">
+        <div>
+          <h2
+            id="detailsTitle"
+            class="modal-title"
+          ></h2>
+
+          <p
+            id="detailsAuthor"
+            class="modal-subtitle"
+          ></p>
+        </div>
+
+        <button
+          class="icon-button"
+          type="button"
+          data-close-modal="detailsModal"
+          aria-label="Chiudi"
+        >
+          ×
+        </button>
+      </header>
+
+      <div
+        id="detailsBody"
+        class="modal-body"
+      ></div>
+
+      <footer class="modal-footer">
+        <button
+          class="button button-secondary"
+          type="button"
+          data-close-modal="detailsModal"
+        >
+          Chiudi
+        </button>
+      </footer>
+    </section>
+  </div>
+
+  <!-- MODALE CONFERMA ELIMINAZIONE -->
+
+  <div
+    id="deleteModal"
+    class="modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="deleteModalTitle"
+    hidden
+  >
+    <section class="modal modal-small">
+      <header class="modal-header">
+        <div>
+          <h2
+            id="deleteModalTitle"
+            class="modal-title"
+          >
+            Eliminare il libro?
+          </h2>
+
+          <p class="modal-subtitle">
+            Questa operazione non può essere annullata.
+          </p>
+        </div>
+
+        <button
+          class="icon-button"
+          type="button"
+          data-close-modal="deleteModal"
+          aria-label="Chiudi"
+        >
+          ×
+        </button>
+      </header>
+
+      <div class="modal-body">
+        <p id="deleteMessage"></p>
       </div>
-      <p class="auth-intro">Usa lo stesso account su telefono, tablet e computer per vedere sempre gli stessi libri.</p>
-      <label class="field"><span>Email</span><input id="authEmail" type="email" autocomplete="email" required></label>
-      <label class="field"><span>Password</span><input id="authPassword" type="password" minlength="6" autocomplete="current-password" required></label>
-      <p class="form-message" id="authMessage" aria-live="polite"></p>
-      <div class="dialog-actions auth-actions">
-        <button class="text-button" id="toggleAuthMode" type="button">Crea un account</button>
-        <button class="button button-primary" id="authSubmit" type="submit">Accedi</button>
-      </div>
-    </form>
-  </dialog>
-  <script type="module" src="app.js"></script>
+
+      <footer class="modal-footer">
+        <button
+          class="button button-secondary"
+          type="button"
+          data-close-modal="deleteModal"
+        >
+          Annulla
+        </button>
+
+        <button
+          id="confirmDeleteButton"
+          class="button button-danger"
+          type="button"
+        >
+          Elimina
+        </button>
+      </footer>
+    </section>
+  </div>
+
+  <div
+    id="toastContainer"
+    class="toast-container"
+    aria-live="polite"
+  ></div>
+
+  <script type="module">
+    /* =========================================================
+       FIREBASE
+       SOSTITUISCI QUESTI VALORI CON QUELLI DEL TUO PROGETTO
+    ========================================================= */
+
+    const firebaseConfig = {
+      apiKey: "INSERISCI_API_KEY",
+      authDomain: "INSERISCI_AUTH_DOMAIN",
+      projectId: "INSERISCI_PROJECT_ID",
+      storageBucket: "INSERISCI_STORAGE_BUCKET",
+      messagingSenderId: "INSERISCI_MESSAGING_SENDER_ID",
+      appId: "INSERISCI_APP_ID"
+    };
+
+    /*
+      Versione Firebase fissata per evitare modifiche impreviste.
+      Tutto funziona direttamente su GitHub Pages senza npm.
+    */
+
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+
+    import {
+      getAuth,
+      onAuthStateChanged,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      setPersistence,
+      browserLocalPersistence
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      collection,
+      doc,
+      addDoc,
+      updateDoc,
+      deleteDoc,
+      onSnapshot,
+      query,
+      orderBy,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    /* =========================================================
+       UTILITÀ DOM
+    ========================================================= */
+
+    const $ = (selector, parent = document) =>
+      parent.querySelector(selector);
+
+    const $$ = (selector, parent = document) =>
+      [...parent.querySelectorAll(selector)];
+
+    const elements = {
+      loadingOverlay: $("#loadingOverlay"),
+
+      syncStatus: $("#syncStatus"),
+      syncStatusText: $("#syncStatusText"),
+
+      headerAddButton: $("#headerAddButton"),
+      heroAddButton: $("#heroAddButton"),
+      scrollLibraryButton: $("#scrollLibraryButton"),
+
+      authPanel: $("#authPanel"),
+      authTitle: $("#authTitle"),
+      authDescription: $("#authDescription"),
+      loggedOutActions: $("#loggedOutActions"),
+      loggedInActions: $("#loggedInActions"),
+      userEmail: $("#userEmail"),
+      loginButton: $("#loginButton"),
+      registerButton: $("#registerButton"),
+      logoutButton: $("#logoutButton"),
+
+      totalBooksStat: $("#totalBooksStat"),
+      totalPagesStat: $("#totalPagesStat"),
+      averageRatingStat: $("#averageRatingStat"),
+      favoritesStat: $("#favoritesStat"),
+
+      librarySection: $("#librarySection"),
+      booksGrid: $("#booksGrid"),
+      resultsCount: $("#resultsCount"),
+      emptyState: $("#emptyState"),
+      emptyTitle: $("#emptyTitle"),
+      emptyDescription: $("#emptyDescription"),
+
+      searchInput: $("#searchInput"),
+      favoriteFilter: $("#favoriteFilter"),
+      ratingFilter: $("#ratingFilter"),
+      pagesFilter: $("#pagesFilter"),
+      sortSelect: $("#sortSelect"),
+      resetFiltersButton: $("#resetFiltersButton"),
+
+      authModal: $("#authModal"),
+      authModalTitle: $("#authModalTitle"),
+      authModalSubtitle: $("#authModalSubtitle"),
+      authForm: $("#authForm"),
+      authEmail: $("#authEmail"),
+      authPassword: $("#authPassword"),
+      authSubmitButton: $("#authSubmitButton"),
+
+      bookModal: $("#bookModal"),
+      bookModalTitle: $("#bookModalTitle"),
+      bookForm: $("#bookForm"),
+      bookId: $("#bookId"),
+      bookTitle: $("#bookTitle"),
+      bookAuthor: $("#bookAuthor"),
+      bookRating: $("#bookRating"),
+      ratingSelector: $("#ratingSelector"),
+      ratingText: $("#ratingText"),
+      bookPages: $("#bookPages"),
+      bookReadingTime: $("#bookReadingTime"),
+      bookFavorite: $("#bookFavorite"),
+      bookDescription: $("#bookDescription"),
+      bookNotes: $("#bookNotes"),
+      saveBookButton: $("#saveBookButton"),
+
+      detailsModal: $("#detailsModal"),
+      detailsTitle: $("#detailsTitle"),
+      detailsAuthor: $("#detailsAuthor"),
+      detailsBody: $("#detailsBody"),
+
+      deleteModal: $("#deleteModal"),
+      deleteMessage: $("#deleteMessage"),
+      confirmDeleteButton: $("#confirmDeleteButton"),
+
+      toastContainer: $("#toastContainer")
+    };
+
+    /* =========================================================
+       STATO APPLICAZIONE
+    ========================================================= */
+
+    const state = {
+      firebaseReady: false,
+      currentUser: null,
+      books: [],
+      unsubscribeBooks: null,
+      authMode: "login",
+      pendingDeleteId: null,
+      saveInProgress: false
+    };
+
+    const LOCAL_CACHE_PREFIX = "lindasArchive.books.";
+
+    /* =========================================================
+       VALIDAZIONE CONFIGURAZIONE
+    ========================================================= */
+
+    function isFirebaseConfigured() {
+      return Object.values(firebaseConfig).every((value) => {
+        return (
+          typeof value === "string" &&
+          value.trim() !== "" &&
+          !value.includes("INSERISCI_")
+        );
+      });
+    }
+
+    let app;
+    let auth;
+    let db;
+
+    if (isFirebaseConfigured()) {
+      try {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+
+        await setPersistence(auth, browserLocalPersistence);
+
+        state.firebaseReady = true;
+      } catch (error) {
+        console.error("Errore inizializzazione Firebase:", error);
+        showToast(
+          "Firebase non è stato inizializzato correttamente.",
+          "error"
+        );
+      }
+    } else {
+      showToast(
+        "Inserisci la configurazione Firebase nel file index.html.",
+        "error",
+        9000
+      );
+    }
+
+    /* =========================================================
+       FUNZIONI GENERALI
+    ========================================================= */
+
+    function escapeHTML(value = "") {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function normalizeText(value = "") {
+      return String(value)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLocaleLowerCase("it")
+        .trim();
+    }
+
+    function normalizeString(value, maxLength) {
+      return String(value ?? "")
+        .replace(/\r\n/g, "\n")
+        .trim()
+        .slice(0, maxLength);
+    }
+
+    function normalizeInteger(value, min, max) {
+      const number = Number.parseInt(value, 10);
+
+      if (!Number.isFinite(number)) {
+        return null;
+      }
+
+      return Math.min(max, Math.max(min, number));
+    }
+
+    function formatNumber(value) {
+      return new Intl.NumberFormat("it-IT").format(value || 0);
+    }
+
+    function pluralizeBooks(number) {
+      return number === 1 ? "1 libro" : `${number} libri`;
+    }
+
+    function formatDate(timestamp) {
+      if (!timestamp) {
+        return "Data non disponibile";
+      }
+
+      const date =
+        typeof timestamp.toDate === "function"
+          ? timestamp.toDate()
+          : new Date(timestamp);
+
+      if (Number.isNaN(date.getTime())) {
+        return "Data non disponibile";
+      }
+
+      return new Intl.DateTimeFormat("it-IT", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      }).format(date);
+    }
+
+    function setButtonLoading(button, loading, loadingText) {
+      if (!button) {
+        return;
+      }
+
+      if (loading) {
+        button.dataset.originalText = button.textContent;
+        button.textContent = loadingText;
+        button.disabled = true;
+      } else {
+        button.textContent =
+          button.dataset.originalText || button.textContent;
+        button.disabled = false;
+      }
+    }
+
+    function showToast(message, type = "success", duration = 3500) {
+      const toast = document.createElement("div");
+
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+
+      elements.toastContainer.append(toast);
+
+      window.setTimeout(() => {
+        toast.remove();
+      }, duration);
+    }
+
+    function updateSyncStatus(mode, text) {
+      elements.syncStatus.classList.remove("online", "offline");
+
+      if (mode) {
+        elements.syncStatus.classList.add(mode);
+      }
+
+      elements.syncStatusText.textContent = text;
+    }
+
+    function saveLocalCache() {
+      if (!state.currentUser) {
+        return;
+      }
+
+      try {
+        localStorage.setItem(
+          `${LOCAL_CACHE_PREFIX}${state.currentUser.uid}`,
+          JSON.stringify(state.books)
+        );
+      } catch (error) {
+        console.warn("Impossibile salvare cache locale:", error);
+      }
+    }
+
+    function loadLocalCache(uid) {
+      try {
+        const raw = localStorage.getItem(
+          `${LOCAL_CACHE_PREFIX}${uid}`
+        );
+
+        if (!raw) {
+          return [];
+        }
+
+        const parsed = JSON.parse(raw);
+
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    /* =========================================================
+       MODALI
+    ========================================================= */
+
+    function openModal(modal) {
+      if (!modal) {
+        return;
+      }
+
+      modal.hidden = false;
+      document.body.classList.add("modal-open");
+
+      const focusable = modal.querySelector(
+        "input:not([type='hidden']), button, select, textarea"
+      );
+
+      window.setTimeout(() => {
+        focusable?.focus();
+      }, 50);
+    }
+
+    function closeModal(modal) {
+      if (!modal) {
+        return;
+      }
+
+      modal.hidden = true;
+
+      const anyOpenModal = $$(".modal-backdrop").some(
+        (item) => !item.hidden
+      );
+
+      if (!anyOpenModal) {
+        document.body.classList.remove("modal-open");
+      }
+    }
+
+    $$("[data-close-modal]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const modalId = button.dataset.closeModal;
+        closeModal(document.getElementById(modalId));
+      });
+    });
+
+    $$(".modal-backdrop").forEach((backdrop) => {
+      backdrop.addEventListener("click", (event) => {
+        if (event.target === backdrop) {
+          closeModal(backdrop);
+        }
+      });
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      const openModals = $$(".modal-backdrop").filter(
+        (modal) => !modal.hidden
+      );
+
+      const lastModal = openModals.at(-1);
+
+      if (lastModal) {
+        closeModal(lastModal);
+      }
+    });
+
+    /* =========================================================
+       AUTENTICAZIONE
+    ========================================================= */
+
+    function openAuthModal(mode) {
+      if (!state.firebaseReady) {
+        showToast(
+          "Configura prima Firebase nel file index.html.",
+          "error"
+        );
+        return;
+      }
+
+      state.authMode = mode;
+
+      elements.authForm.reset();
+
+      if (mode === "register") {
+        elements.authModalTitle.textContent = "Crea il tuo account";
+        elements.authModalSubtitle.textContent =
+          "Usa questo account su tutti i tuoi dispositivi.";
+        elements.authSubmitButton.textContent = "Crea account";
+        elements.authPassword.autocomplete = "new-password";
+      } else {
+        elements.authModalTitle.textContent = "Accedi";
+        elements.authModalSubtitle.textContent =
+          "Inserisci email e password del tuo archivio.";
+        elements.authSubmitButton.textContent = "Accedi";
+        elements.authPassword.autocomplete = "current-password";
+      }
+
+      openModal(elements.authModal);
+    }
+
+    elements.loginButton.addEventListener("click", () => {
+      openAuthModal("login");
+    });
+
+    elements.registerButton.addEventListener("click", () => {
+      openAuthModal("register");
+    });
+
+    elements.authForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const email = elements.authEmail.value.trim();
+      const password = elements.authPassword.value;
+
+      if (!email || !password) {
+        showToast(
+          "Inserisci email e password.",
+          "error"
+        );
+        return;
+      }
+
+      if (password.length < 6) {
+        showToast(
+          "La password deve contenere almeno 6 caratteri.",
+          "error"
+        );
+        return;
+      }
+
+      setButtonLoading(
+        elements.authSubmitButton,
+        true,
+        state.authMode === "register"
+          ? "Creazione..."
+          : "Accesso..."
+      );
+
+      try {
+        if (state.authMode === "register") {
+          await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+          showToast("Account creato correttamente.");
+        } else {
+          await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+          showToast("Accesso effettuato.");
+        }
+
+        closeModal(elements.authModal);
+      } catch (error) {
+        console.error(error);
+        showToast(
+          getAuthErrorMessage(error.code),
+          "error",
+          5500
+        );
+      } finally {
+        setButtonLoading(
+          elements.authSubmitButton,
+          false
+        );
+      }
+    });
+
+    elements.logoutButton.addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        showToast("Sei uscita dal tuo archivio.");
+      } catch (error) {
+        console.error(error);
+        showToast(
+          "Non è stato possibile uscire.",
+          "error"
+        );
+      }
+    });
+
+    function getAuthErrorMessage(code) {
+      const messages = {
+        "auth/email-already-in-use":
+          "Esiste già un account con questa email.",
+
+        "auth/invalid-email":
+          "L'indirizzo email non è valido.",
+
+        "auth/invalid-credential":
+          "Email o password non corretti.",
+
+        "auth/user-disabled":
+          "Questo account è stato disabilitato.",
+
+        "auth/weak-password":
+          "La password è troppo debole.",
+
+        "auth/too-many-requests":
+          "Troppi tentativi. Riprova più tardi.",
+
+        "auth/network-request-failed":
+          "Problema di connessione. Controlla internet."
+      };
+
+      return (
+        messages[code] ||
+        "Non è stato possibile completare l'operazione."
+      );
+    }
+
+    /* =========================================================
+       STATO UTENTE
+    ========================================================= */
+
+    function updateAuthInterface(user) {
+      const loggedIn = Boolean(user);
+
+      elements.loggedOutActions.hidden = loggedIn;
+      elements.loggedInActions.hidden = !loggedIn;
+
+      elements.headerAddButton.hidden = !loggedIn;
+      elements.heroAddButton.hidden = !loggedIn;
+
+      if (loggedIn) {
+        elements.userEmail.textContent = user.email || "Account";
+
+        elements.authTitle.textContent =
+          "Archivio sincronizzato";
+
+        elements.authDescription.textContent =
+          "I tuoi libri vengono aggiornati su tutti i dispositivi collegati allo stesso account.";
+      } else {
+        elements.userEmail.textContent = "";
+
+        elements.authTitle.textContent =
+          "Accedi al tuo archivio";
+
+        elements.authDescription.textContent =
+          "Usa lo stesso account su telefono, tablet e computer per trovare sempre gli stessi libri.";
+      }
+    }
+
+    if (state.firebaseReady) {
+      onAuthStateChanged(auth, (user) => {
+        state.currentUser = user;
+        updateAuthInterface(user);
+
+        if (state.unsubscribeBooks) {
+          state.unsubscribeBooks();
+          state.unsubscribeBooks = null;
+        }
+
+        if (user) {
+          subscribeToBooks(user.uid);
+        } else {
+          state.books = [];
+          updateSyncStatus(
+            "offline",
+            "Accedi per sincronizzare"
+          );
+          renderEverything();
+        }
+
+        elements.loadingOverlay.hidden = true;
+      });
+    } else {
+      updateAuthInterface(null);
+      updateSyncStatus(
+        "offline",
+        "Firebase non configurato"
+      );
+      renderEverything();
+      elements.loadingOverlay.hidden = true;
+    }
+
+    /* =========================================================
+       FIRESTORE
+    ========================================================= */
+
+    function getBooksCollection(uid) {
+      return collection(
+        db,
+        "users",
+        uid,
+        "books"
+      );
+    }
+
+    function subscribeToBooks(uid) {
+      updateSyncStatus(
+        null,
+        "Sincronizzazione..."
+      );
+
+      const booksQuery = query(
+        getBooksCollection(uid),
+        orderBy("createdAt", "desc")
+      );
+
+      state.unsubscribeBooks = onSnapshot(
+        booksQuery,
+        {
+          includeMetadataChanges: true
+        },
+        (snapshot) => {
+          state.books = snapshot.docs.map((bookDocument) => {
+            return normalizeBook({
+              id: bookDocument.id,
+              ...bookDocument.data()
+            });
+          });
+
+          saveLocalCache();
+          renderEverything();
+
+          const fromCache = snapshot.metadata.fromCache;
+
+          updateSyncStatus(
+            fromCache ? "offline" : "online",
+            fromCache
+              ? "Dati disponibili offline"
+              : "Archivio sincronizzato"
+          );
+        },
+        (error) => {
+          console.error("Errore Firestore:", error);
+
+          const cachedBooks = loadLocalCache(uid);
+
+          if (cachedBooks.length) {
+            state.books = cachedBooks.map(normalizeBook);
+            renderEverything();
+          }
+
+          updateSyncStatus(
+            "offline",
+            "Sincronizzazione non disponibile"
+          );
+
+          showToast(
+            "Non è stato possibile sincronizzare i libri.",
+            "error",
+            6000
+          );
+        }
+      );
+    }
+
+    function normalizeBook(book) {
+      return {
+        id: String(book.id || ""),
+
+        title:
+          normalizeString(book.title, 180) ||
+          "Titolo non disponibile",
+
+        author:
+          normalizeString(book.author, 180) ||
+          "Autore non disponibile",
+
+        rating:
+          normalizeInteger(book.rating, 0, 10) || 0,
+
+        favorite:
+          Boolean(book.favorite),
+
+        pages:
+          normalizeInteger(book.pages, 1, 100000),
+
+        readingTime:
+          normalizeString(book.readingTime, 100),
+
+        description:
+          normalizeString(book.description, 3000),
+
+        notes:
+          normalizeString(book.notes, 5000),
+
+        createdAt:
+          book.createdAt || null,
+
+        updatedAt:
+          book.updatedAt || null
+      };
+    }
+
+    function readBookForm() {
+      const title = normalizeString(
+        elements.bookTitle.value,
+        180
+      );
+
+      const author = normalizeString(
+        elements.bookAuthor.value,
+        180
+      );
+
+      const rating =
+        normalizeInteger(
+          elements.bookRating.value,
+          0,
+          10
+        ) || 0;
+
+      const pages = elements.bookPages.value
+        ? normalizeInteger(
+            elements.bookPages.value,
+            1,
+            100000
+          )
+        : null;
+
+      const readingTime = normalizeString(
+        elements.bookReadingTime.value,
+        100
+      );
+
+      const description = normalizeString(
+        elements.bookDescription.value,
+        3000
+      );
+
+      const notes = normalizeString(
+        elements.bookNotes.value,
+        5000
+      );
+
+      return {
+        title,
+        author,
+        rating,
+        pages,
+        readingTime,
+        description,
+        notes,
+        favorite: elements.bookFavorite.checked
+      };
+    }
+
+    function validateBook(book) {
+      if (!book.title) {
+        return "Inserisci il titolo del libro.";
+      }
+
+      if (!book.author) {
+        return "Inserisci l'autore del libro.";
+      }
+
+      if (book.rating < 1 || book.rating > 10) {
+        return "Seleziona una valutazione da 1 a 10 stelle.";
+      }
+
+      if (
+        book.pages !== null &&
+        (!Number.isInteger(book.pages) || book.pages < 1)
+      ) {
+        return "Il numero di pagine non è valido.";
+      }
+
+      return null;
+    }
+
+    elements.bookForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!state.currentUser) {
+        showToast(
+          "Devi accedere prima di salvare un libro.",
+          "error"
+        );
+        return;
+      }
+
+      if (state.saveInProgress) {
+        return;
+      }
+
+      const book = readBookForm();
+      const validationError = validateBook(book);
+
+      if (validationError) {
+        showToast(validationError, "error");
+        return;
+      }
+
+      state.saveInProgress = true;
+
+      setButtonLoading(
+        elements.saveBookButton,
+        true,
+        "Salvataggio..."
+      );
+
+      try {
+        const existingId = elements.bookId.value;
+
+        if (existingId) {
+          await updateDoc(
+            doc(
+              db,
+              "users",
+              state.currentUser.uid,
+              "books",
+              existingId
+            ),
+            {
+              ...book,
+              updatedAt: serverTimestamp()
+            }
+          );
+
+          showToast("Libro aggiornato.");
+        } else {
+          await addDoc(
+            getBooksCollection(state.currentUser.uid),
+            {
+              ...book,
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp()
+            }
+          );
+
+          showToast("Libro aggiunto all'archivio.");
+        }
+
+        closeModal(elements.bookModal);
+        elements.bookForm.reset();
+      } catch (error) {
+        console.error(error);
+
+        showToast(
+          "Non è stato possibile salvare il libro. Controlla la connessione e le regole Firestore.",
+          "error",
+          6500
+        );
+      } finally {
+        state.saveInProgress = false;
+
+        setButtonLoading(
+          elements.saveBookButton,
+          false
+        );
+      }
+    });
+
+    async function toggleFavorite(bookId) {
+      if (!state.currentUser) {
+        return;
+      }
+
+      const book = state.books.find(
+        (item) => item.id === bookId
+      );
+
+      if (!book) {
+        return;
+      }
+
+      try {
+        await updateDoc(
+          doc(
+            db,
+            "users",
+            state.currentUser.uid,
+            "books",
+            bookId
+          ),
+          {
+            favorite: !book.favorite,
+            updatedAt: serverTimestamp()
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        showToast(
+          "Non è stato possibile modificare i preferiti.",
+          "error"
+        );
+      }
+    }
+
+    async function deleteSelectedBook() {
+      const bookId = state.pendingDeleteId;
+
+      if (!bookId || !state.currentUser) {
+        return;
+      }
+
+      setButtonLoading(
+        elements.confirmDeleteButton,
+        true,
+        "Eliminazione..."
+      );
+
+      try {
+        await deleteDoc(
+          doc(
+            db,
+            "users",
+            state.currentUser.uid,
+            "books",
+            bookId
+          )
+        );
+
+        state.pendingDeleteId = null;
+        closeModal(elements.deleteModal);
+
+        showToast("Libro eliminato.");
+      } catch (error) {
+        console.error(error);
+
+        showToast(
+          "Non è stato possibile eliminare il libro.",
+          "error"
+        );
+      } finally {
+        setButtonLoading(
+          elements.confirmDeleteButton,
+          false
+        );
+      }
+    }
+
+    elements.confirmDeleteButton.addEventListener(
+      "click",
+      deleteSelectedBook
+    );
+
+    /* =========================================================
+       VALUTAZIONE A STELLE
+    ========================================================= */
+
+    function createRatingSelector() {
+      elements.ratingSelector.innerHTML = "";
+
+      for (let rating = 1; rating <= 10; rating += 1) {
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "star-button";
+        button.dataset.rating = String(rating);
+        button.textContent = "★";
+        button.title = `${rating} su 10`;
+        button.setAttribute(
+          "aria-label",
+          `${rating} stelle su 10`
+        );
+
+        button.addEventListener("click", () => {
+          setRating(rating);
+        });
+
+        elements.ratingSelector.append(button);
+      }
+    }
+
+    function setRating(rating) {
+      const normalized =
+        normalizeInteger(rating, 0, 10) || 0;
+
+      elements.bookRating.value = String(normalized);
+
+      $$(".star-button", elements.ratingSelector).forEach(
+        (button) => {
+          const buttonRating = Number(
+            button.dataset.rating
+          );
+
+          button.classList.toggle(
+            "selected",
+            buttonRating <= normalized
+          );
+
+          button.setAttribute(
+            "aria-pressed",
+            String(buttonRating === normalized)
+          );
+        }
+      );
+
+      elements.ratingText.textContent =
+        normalized > 0
+          ? `${normalized} stelle su 10`
+          : "Nessuna valutazione selezionata.";
+    }
+
+    createRatingSelector();
+
+    /* =========================================================
+       APERTURA FORM LIBRO
+    ========================================================= */
+
+    function openNewBookModal() {
+      if (!state.currentUser) {
+        openAuthModal("login");
+        return;
+      }
+
+      elements.bookForm.reset();
+      elements.bookId.value = "";
+      elements.bookModalTitle.textContent =
+        "Aggiungi un libro";
+      elements.saveBookButton.textContent =
+        "Salva libro";
+
+      setRating(0);
+      openModal(elements.bookModal);
+    }
+
+    function openEditBookModal(bookId) {
+      const book = state.books.find(
+        (item) => item.id === bookId
+      );
+
+      if (!book) {
+        showToast(
+          "Il libro selezionato non è disponibile.",
+          "error"
+        );
+        return;
+      }
+
+      elements.bookForm.reset();
+
+      elements.bookId.value = book.id;
+      elements.bookTitle.value = book.title;
+      elements.bookAuthor.value = book.author;
+      elements.bookPages.value = book.pages ?? "";
+      elements.bookReadingTime.value = book.readingTime;
+      elements.bookFavorite.checked = book.favorite;
+      elements.bookDescription.value = book.description;
+      elements.bookNotes.value = book.notes;
+
+      elements.bookModalTitle.textContent =
+        "Modifica libro";
+      elements.saveBookButton.textContent =
+        "Salva modifiche";
+
+      setRating(book.rating);
+      openModal(elements.bookModal);
+    }
+
+    elements.headerAddButton.addEventListener(
+      "click",
+      openNewBookModal
+    );
+
+    elements.heroAddButton.addEventListener(
+      "click",
+      openNewBookModal
+    );
+
+    elements.scrollLibraryButton.addEventListener(
+      "click",
+      () => {
+        elements.librarySection.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+    );
+
+    /* =========================================================
+       FILTRI E ORDINAMENTO
+    ========================================================= */
+
+    function getVisibleBooks() {
+      const searchTerm = normalizeText(
+        elements.searchInput.value
+      );
+
+      const favoriteMode =
+        elements.favoriteFilter.value;
+
+      const minimumRating = Number(
+        elements.ratingFilter.value
+      );
+
+      const pagesMode =
+        elements.pagesFilter.value;
+
+      const sortMode =
+        elements.sortSelect.value;
+
+      const filtered = state.books.filter((book) => {
+        const searchable = normalizeText(
+          [
+            book.title,
+            book.author,
+            book.description,
+            book.notes,
+            book.readingTime
+          ].join(" ")
+        );
+
+        const matchesSearch =
+          !searchTerm ||
+          searchable.includes(searchTerm);
+
+        const matchesFavorite =
+          favoriteMode === "all" ||
+          (
+            favoriteMode === "favorites" &&
+            book.favorite
+          ) ||
+          (
+            favoriteMode === "not-favorites" &&
+            !book.favorite
+          );
+
+        const matchesRating =
+          minimumRating === 0 ||
+          book.rating >= minimumRating;
+
+        let matchesPages = true;
+
+        if (pagesMode === "short") {
+          matchesPages =
+            book.pages !== null &&
+            book.pages <= 200;
+        }
+
+        if (pagesMode === "medium") {
+          matchesPages =
+            book.pages !== null &&
+            book.pages >= 201 &&
+            book.pages <= 400;
+        }
+
+        if (pagesMode === "long") {
+          matchesPages =
+            book.pages !== null &&
+            book.pages > 400;
+        }
+
+        if (pagesMode === "unknown") {
+          matchesPages = book.pages === null;
+        }
+
+        return (
+          matchesSearch &&
+          matchesFavorite &&
+          matchesRating &&
+          matchesPages
+        );
+      });
+
+      return filtered.sort((a, b) => {
+        const collator = new Intl.Collator(
+          "it",
+          {
+            sensitivity: "base",
+            numeric: true
+          }
+        );
+
+        switch (sortMode) {
+          case "oldest":
+            return getTimestamp(a.createdAt) -
+              getTimestamp(b.createdAt);
+
+          case "title-asc":
+            return collator.compare(
+              a.title,
+              b.title
+            );
+
+          case "title-desc":
+            return collator.compare(
+              b.title,
+              a.title
+            );
+
+          case "author-asc":
+            return collator.compare(
+              a.author,
+              b.author
+            );
+
+          case "rating-desc":
+            return b.rating - a.rating;
+
+          case "rating-asc":
+            return a.rating - b.rating;
+
+          case "pages-desc":
+            return (b.pages || 0) -
+              (a.pages || 0);
+
+          case "pages-asc":
+            return (
+              a.pages ?? Number.MAX_SAFE_INTEGER
+            ) - (
+              b.pages ?? Number.MAX_SAFE_INTEGER
+            );
+
+          case "newest":
+          default:
+            return getTimestamp(b.createdAt) -
+              getTimestamp(a.createdAt);
+        }
+      });
+    }
+
+    function getTimestamp(value) {
+      if (!value) {
+        return 0;
+      }
+
+      if (typeof value.toMillis === "function") {
+        return value.toMillis();
+      }
+
+      const date = new Date(value);
+      return Number.isNaN(date.getTime())
+        ? 0
+        : date.getTime();
+    }
+
+    const filterElements = [
+      elements.searchInput,
+      elements.favoriteFilter,
+      elements.ratingFilter,
+      elements.pagesFilter,
+      elements.sortSelect
+    ];
+
+    filterElements.forEach((element) => {
+      element.addEventListener("input", renderBooks);
+      element.addEventListener("change", renderBooks);
+    });
+
+    elements.resetFiltersButton.addEventListener(
+      "click",
+      () => {
+        elements.searchInput.value = "";
+        elements.favoriteFilter.value = "all";
+        elements.ratingFilter.value = "0";
+        elements.pagesFilter.value = "all";
+        elements.sortSelect.value = "newest";
+
+        renderBooks();
+      }
+    );
+
+    /* =========================================================
+       RENDER STATISTICHE
+    ========================================================= */
+
+    function renderStats() {
+      const totalBooks = state.books.length;
+
+      const totalPages = state.books.reduce(
+        (sum, book) => sum + (book.pages || 0),
+        0
+      );
+
+      const ratedBooks = state.books.filter(
+        (book) => book.rating > 0
+      );
+
+      const averageRating = ratedBooks.length
+        ? (
+            ratedBooks.reduce(
+              (sum, book) => sum + book.rating,
+              0
+            ) / ratedBooks.length
+          ).toFixed(1)
+        : "0";
+
+      const favorites = state.books.filter(
+        (book) => book.favorite
+      ).length;
+
+      elements.totalBooksStat.textContent =
+        formatNumber(totalBooks);
+
+      elements.totalPagesStat.textContent =
+        formatNumber(totalPages);
+
+      elements.averageRatingStat.textContent =
+        averageRating;
+
+      elements.favoritesStat.textContent =
+        formatNumber(favorites);
+    }
+
+    /* =========================================================
+       RENDER LIBRI
+    ========================================================= */
+
+    function renderBooks() {
+      const visibleBooks = getVisibleBooks();
+
+      elements.booksGrid.innerHTML = "";
+      elements.resultsCount.textContent =
+        pluralizeBooks(visibleBooks.length);
+
+      const hasFilters =
+        elements.searchInput.value.trim() ||
+        elements.favoriteFilter.value !== "all" ||
+        elements.ratingFilter.value !== "0" ||
+        elements.pagesFilter.value !== "all";
+
+      if (!state.currentUser) {
+        elements.emptyState.hidden = false;
+        elements.booksGrid.hidden = true;
+
+        elements.emptyTitle.textContent =
+          "Accedi al tuo archivio";
+
+        elements.emptyDescription.textContent =
+          "Dopo l'accesso vedrai gli stessi libri su telefono, tablet e computer.";
+
+        return;
+      }
+
+      if (visibleBooks.length === 0) {
+        elements.emptyState.hidden = false;
+        elements.booksGrid.hidden = true;
+
+        if (state.books.length === 0) {
+          elements.emptyTitle.textContent =
+            "Il tuo archivio è vuoto";
+
+          elements.emptyDescription.textContent =
+            "Aggiungi il primo libro per iniziare a costruire la tua biblioteca personale.";
+        } else if (hasFilters) {
+          elements.emptyTitle.textContent =
+            "Nessun libro trovato";
+
+          elements.emptyDescription.textContent =
+            "Prova a modificare la ricerca o ad azzerare i filtri.";
+        }
+
+        return;
+      }
+
+      elements.emptyState.hidden = true;
+      elements.booksGrid.hidden = false;
+
+      const fragment = document.createDocumentFragment();
+
+      visibleBooks.forEach((book) => {
+        fragment.append(createBookCard(book));
+      });
+
+      elements.booksGrid.append(fragment);
+    }
+
+    function createBookCard(book) {
+      const article = document.createElement("article");
+      article.className = "book-card";
+      article.dataset.bookId = book.id;
+
+      const pagesText = book.pages
+        ? `${formatNumber(book.pages)} pagine`
+        : "Pagine non indicate";
+
+      const readingTimeText =
+        book.readingTime ||
+        "Tempo non indicato";
+
+      article.innerHTML = `
+        <div class="book-accent"></div>
+
+        <div class="book-content">
+          <div class="book-topline">
+            <span class="book-rating">
+              ${"★".repeat(book.rating)}
+              <span aria-label="${book.rating} su 10">
+                ${book.rating}/10
+              </span>
+            </span>
+
+            <button
+              class="favorite-button ${
+                book.favorite ? "active" : ""
+              }"
+              type="button"
+              aria-label="${
+                book.favorite
+                  ? "Rimuovi dai preferiti"
+                  : "Aggiungi ai preferiti"
+              }"
+              title="${
+                book.favorite
+                  ? "Rimuovi dai preferiti"
+                  : "Aggiungi ai preferiti"
+              }"
+              data-action="favorite"
+            >
+              ♥
+            </button>
+          </div>
+
+          <h3 class="book-title">
+            ${escapeHTML(book.title)}
+          </h3>
+
+          <p class="book-author">
+            ${escapeHTML(book.author)}
+          </p>
+
+          <p class="book-description">
+            ${
+              escapeHTML(
+                book.description ||
+                "Nessuna descrizione inserita."
+              )
+            }
+          </p>
+
+          <div class="book-meta">
+            <span class="meta-pill">
+              ${escapeHTML(pagesText)}
+            </span>
+
+            <span class="meta-pill">
+              ${escapeHTML(readingTimeText)}
+            </span>
+
+            ${
+              book.notes
+                ? `<span class="meta-pill">Con note</span>`
+                : ""
+            }
+          </div>
+
+          <div class="book-actions">
+            <button
+              class="button button-secondary button-small"
+              type="button"
+              data-action="details"
+            >
+              Dettagli
+            </button>
+
+            <button
+              class="button button-secondary button-small"
+              type="button"
+              data-action="edit"
+            >
+              Modifica
+            </button>
+
+            <button
+              class="button button-danger button-small"
+              type="button"
+              data-action="delete"
+            >
+              Elimina
+            </button>
+          </div>
+        </div>
+      `;
+
+      article.addEventListener("click", (event) => {
+        const actionButton = event.target.closest(
+          "[data-action]"
+        );
+
+        if (!actionButton) {
+          return;
+        }
+
+        const action = actionButton.dataset.action;
+
+        if (action === "favorite") {
+          toggleFavorite(book.id);
+        }
+
+        if (action === "details") {
+          openBookDetails(book.id);
+        }
+
+        if (action === "edit") {
+          openEditBookModal(book.id);
+        }
+
+        if (action === "delete") {
+          openDeleteConfirmation(book.id);
+        }
+      });
+
+      return article;
+    }
+
+    /* =========================================================
+       DETTAGLI ED ELIMINAZIONE
+    ========================================================= */
+
+    function openBookDetails(bookId) {
+      const book = state.books.find(
+        (item) => item.id === bookId
+      );
+
+      if (!book) {
+        return;
+      }
+
+      elements.detailsTitle.textContent = book.title;
+      elements.detailsAuthor.textContent = book.author;
+
+      elements.detailsBody.innerHTML = `
+        <div class="details-grid">
+          <div class="detail-box">
+            <span>Valutazione</span>
+            <strong>
+              ${"★".repeat(book.rating)}
+              ${book.rating}/10
+            </strong>
+          </div>
+
+          <div class="detail-box">
+            <span>Pagine</span>
+            <strong>
+              ${
+                book.pages
+                  ? formatNumber(book.pages)
+                  : "Non indicate"
+              }
+            </strong>
+          </div>
+
+          <div class="detail-box">
+            <span>Tempo di lettura</span>
+            <strong>
+              ${
+                escapeHTML(
+                  book.readingTime ||
+                  "Non indicato"
+                )
+              }
+            </strong>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h4>Preferito</h4>
+          <p>
+            ${book.favorite ? "Sì ♥" : "No"}
+          </p>
+        </div>
+
+        <div class="detail-section">
+          <h4>Descrizione</h4>
+          <p>
+            ${
+              escapeHTML(
+                book.description ||
+                "Nessuna descrizione inserita."
+              )
+            }
+          </p>
+        </div>
+
+        <div class="detail-section">
+          <h4>Note personali</h4>
+          <p>
+            ${
+              escapeHTML(
+                book.notes ||
+                "Nessuna nota inserita."
+              )
+            }
+          </p>
+        </div>
+
+        <div class="detail-section">
+          <h4>Aggiunto all'archivio</h4>
+          <p>
+            ${escapeHTML(formatDate(book.createdAt))}
+          </p>
+        </div>
+      `;
+
+      openModal(elements.detailsModal);
+    }
+
+    function openDeleteConfirmation(bookId) {
+      const book = state.books.find(
+        (item) => item.id === bookId
+      );
+
+      if (!book) {
+        return;
+      }
+
+      state.pendingDeleteId = book.id;
+
+      elements.deleteMessage.textContent =
+        `Stai per eliminare “${book.title}” di ${book.author}.`;
+
+      openModal(elements.deleteModal);
+    }
+
+    /* =========================================================
+       RENDER COMPLETO
+    ========================================================= */
+
+    function renderEverything() {
+      renderStats();
+      renderBooks();
+    }
+
+    /* =========================================================
+       STATO RETE
+    ========================================================= */
+
+    window.addEventListener("online", () => {
+      if (state.currentUser) {
+        updateSyncStatus(
+          null,
+          "Riconnessione..."
+        );
+      }
+    });
+
+    window.addEventListener("offline", () => {
+      updateSyncStatus(
+        "offline",
+        "Dispositivo offline"
+      );
+    });
+  </script>
 </body>
 </html>
